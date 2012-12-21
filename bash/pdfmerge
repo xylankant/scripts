@@ -1,0 +1,36 @@
+#!/bin/bash
+
+OUT=""
+IN=""
+
+function help {
+echo "pdfmerge v0.2
+by Philip John Gorinski
+No rights reserved
+
+merges multiple PDF files into a single PDF file
+
+Usage: pdfsplit [IN1 IN2 ...] OUTPUT
+   -h, --help	display this help
+   IN1 IN2 ...	input files
+   OUTPUT		output file
+";
+	exit
+}
+
+args=("$@")
+for ((i=0; i < $#; i++)) {
+	if [ ${args[$i]} == "--help" ] || [ ${args[$i]} == "-h" ] ; then
+		help
+	fi
+	
+	if [ $((i+1)) == $# ]; then
+		OUT="'${args[$i]}'"
+	else
+		IN=$IN" '${args[$i]}'"
+	fi
+}
+echo "merging "$IN
+echo "to "$OUT
+
+eval "gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$OUT $IN"

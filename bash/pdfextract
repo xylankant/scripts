@@ -1,0 +1,50 @@
+#!/bin/bash
+
+OUT=""
+IN=""
+FIRST=""
+LAST=""
+
+function help {
+echo "pdfextract v0.2
+by Philip John Gorinski
+No rights reserved
+
+extracts a specified range of pages from a PDF file, and merges them into another PDF files
+
+Usage: pdfsplit [OPTION]
+   -h, --help			display this help
+   -i, --input [FILE]	specify input FILE
+   -o, --output [FILE]	specify output FILE
+   -f, --first [N]		first page to extact
+   -l, --last [N]		last page to extract
+";
+	exit
+}
+
+args=("$@")
+for ((i=0; i < $#; i++)) {
+	
+	if [ "${args[$i]}" == "--help" ] || [ "${args[$i]}" == "-h" ]; then
+		help
+	fi
+	
+	if [ "${args[$i]}" == "--input" ] [ "${args[$i]}" == "-i" ]; then
+		IN="'${args[$((i+1))]}'"
+	fi
+	
+	if [ "${args[$i]}"  == '--first' ] [ "${args[$i]}" == "-f" ]; then
+		FIRST="'${args[$((i+1))]}'"
+	fi
+	
+	if [ "${args[$i]}" == "--last" ][ "${args[$i]}" == "-l" ]; then
+		LAST="'${args[$((i+1))]}'"
+	fi
+	
+	if [ "${args[$i]}" == "--output" ] [ "${args[$i]}" == "-o" ]; then
+		OUT="'${args[$((i+1))]}'"
+	fi
+}
+echo "splitting $IN from page $FIRST - $LAST into $OUT"
+
+eval "gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -dFirstPage=$FIRST -dLastPage=$LAST -sOutputFile=$OUT $IN"
