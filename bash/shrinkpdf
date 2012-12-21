@@ -1,0 +1,38 @@
+#!/bin/sh
+
+function help {
+echo "shrinkpdf v1.0
+by Philip John Gorinski
+No rights reserved
+
+shrinks a PDF file
+
+usage: shrinkpdf DPI INPUT OUTPUT
+   -h, --help	display this help
+   DPI			target DPI; INPUT will be re-sampled to this resolution
+   INPUT		the PDF file to shrink
+   OUTPUT		the PDF file to save to
+"
+exit
+}
+
+args=("$@")
+for ((i=0; i < $#; i++)) {
+	if [ ${args[$i]} == "--help" ] || [ ${args[$i]} == "-h" ] ; then
+		help
+	fi
+}
+gs	-q -dNOPAUSE -dBATCH -dSAFER \
+	-sDEVICE=pdfwrite \
+	-dCompatibilityLevel=1.3 \
+	-dPDFSETTINGS=/screen \
+	-dEmbedAllFonts=true \
+	-dSubsetFonts=true \
+	-dColorImageDownsampleType=/Bicubic \
+	-dColorImageResolution=$1 \
+	-dGrayImageDownsampleType=/Bicubic \
+	-dGrayImageResolution=$1 \
+	-dMonoImageDownsampleType=/Bicubic \
+	-dMonoImageResolution=$1 \
+	-sOutputFile=$3 \
+	 $2
